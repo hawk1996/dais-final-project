@@ -4,6 +4,6 @@
     {
         Pending = 0,
         Processed = 1,
-        Rejected = 2
+        Cancelled = 2
     }
 }

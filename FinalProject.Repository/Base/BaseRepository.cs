@@ -104,7 +104,11 @@ namespace FinalProject.Repository.Base
             }
         }
 
-        public async Task<bool> UpdateAsync(int id, TUpdate? updateParam = default)
+        public async Task<bool> UpdateAsync(
+            int id,
+            TUpdate? updateParam = default,
+            SqlConnection? externalConnection = null,
+            SqlTransaction? externalTransaction = null)
         {
             var updatedValues = new Dictionary<string, object>();
             if (updateParam != null)
@@ -136,32 +140,53 @@ namespace FinalProject.Repository.Base
             var setClause = string.Join(", ", updatedValues.Keys.Select(c => $"{c} = @{c}"));
             var sql = $"UPDATE {table} SET {setClause} WHERE {idColumn} = @{idColumn}";
 
-            using var connection = await ConnectionFactory.CreateConnectionAsync();
-            using var command = new SqlCommand(sql, connection);
-
-            foreach (var kvp in updatedValues)
+            bool createdConnection = false;
+            SqlConnection? connection = externalConnection;
+            if (connection == null)
             {
-                var paramName = "@" + kvp.Key;
-                var value = kvp.Value;
-
-                if (value == null)
-                {
-                    command.Parameters.AddWithValue(paramName, DBNull.Value);
-                }
-                else if (value.GetType().IsEnum)
-                {
-                    command.Parameters.AddWithValue(paramName, Convert.ToInt32(value));
-                }
-                else
-                {
-                    command.Parameters.AddWithValue(paramName, value);
-                }
+                connection = await ConnectionFactory.CreateConnectionAsync();
+                createdConnection = true;
             }
 
-            command.Parameters.AddWithValue("@" + idColumn, id);
+            try
+            {
+                using var command = new SqlCommand(sql, connection);
 
-            var rows = await command.ExecuteNonQueryAsync();
-            return rows != 0;
+                if (externalTransaction != null)
+                    command.Transaction = externalTransaction;
+
+                foreach (var kvp in updatedValues)
+                {
+                    var paramName = "@" + kvp.Key;
+                    var value = kvp.Value;
+
+                    if (value == null)
+                    {
+                        command.Parameters.AddWithValue(paramName, DBNull.Value);
+                    }
+                    else if (value.GetType().IsEnum)
+                    {
+                        command.Parameters.AddWithValue(paramName, Convert.ToInt32(value));
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue(paramName, value);
+                    }
+                }
+
+                command.Parameters.AddWithValue("@" + idColumn, id);
+
+                var rows = await command.ExecuteNonQueryAsync();
+                return rows != 0;
+            }
+
+            finally
+            {
+                if (createdConnection)
+                {
+                    await connection.DisposeAsync();
+                }
+            }
         }
 
         public async Task<bool> DeleteAsync(int id)
