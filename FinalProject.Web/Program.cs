@@ -11,7 +11,7 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Set default culture to Bulgarian (bg-BG)
+
 var cultureInfo = new CultureInfo("bg-BG");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;

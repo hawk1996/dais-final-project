@@ -19,7 +19,7 @@ namespace FinalProject.Web.Models.Payment
         public string ToBankAccountNumber { get; set; }
 
         [Required]
-        [Display(Name = "Сума")]
+        [Display(Name = "Сума в лв.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Сумата трябва да бъде над 0.")]
         public decimal Amount { get; set; }
 
