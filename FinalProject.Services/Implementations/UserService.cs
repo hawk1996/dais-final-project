@@ -3,6 +3,7 @@ using FinalProject.Repository.Interfaces.BankAccount;
 using FinalProject.Repository.Interfaces.User_BankAccount;
 using FinalProject.Services.DTOs.BankAccount;
 using FinalProject.Services.DTOs.User;
+using FinalProject.Services.Helpers;
 using FinalProject.Services.Interfaces;
 
 namespace FinalProject.Services.Implementations
@@ -25,17 +26,10 @@ namespace FinalProject.Services.Implementations
             {
                 var bankAccount = await bankAccountRepository.RetrieveByIdAsync(e.BankAccountId);
                 if (bankAccount != null)
-                    bankAccounts.Add(MapToDto(bankAccount));
+                    bankAccounts.Add(MappingHelper.MapToDto(bankAccount));
             }
 
             return new GetUserBankAccountsResponse { BankAccounts = bankAccounts };
         }
-
-        private static BankAccountDto MapToDto(BankAccount bankAccount) => new BankAccountDto
-        {
-            BankAccountId = bankAccount.BankAccountId,
-            AccountNumber = bankAccount.AccountNumber,
-            Balance = bankAccount.Balance
-        };
     }
 }

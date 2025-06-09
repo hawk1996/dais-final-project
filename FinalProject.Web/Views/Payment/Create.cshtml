@@ -1,0 +1,28 @@
+﻿@model FinalProject.Web.Models.Payment.CreatePaymentViewModel
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="FromBankAccountId"></label>
+        <select asp-for="FromBankAccountId" asp-items="Model.UserBankAccounts" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ToBankAccountNumber"></label>
+        <input asp-for="ToBankAccountNumber" class="form-control" maxlength="22" />
+        <span asp-validation-for="ToBankAccountNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Amount"></label>
+        <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Reason"></label>
+        <input asp-for="Reason" class="form-control" maxlength="32" />
+        <span asp-validation-for="Reason" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Създай плащане</button>
+</form>

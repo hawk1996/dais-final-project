@@ -6,6 +6,7 @@ using FinalProject.Repository.Interfaces.BankAccount;
 using FinalProject.Repository.Interfaces.Payment;
 using FinalProject.Services.DTOs.Payment;
 using FinalProject.Services.Interfaces;
+using FinalProject.Services.Helpers;
 
 namespace FinalProject.Services.Implementations
 {
@@ -83,7 +84,7 @@ namespace FinalProject.Services.Implementations
             await foreach (var payment in _paymentRepository.RetrieveCollectionAsync(filter))
             {
                 if (payment != null)
-                    payments.Add(MapToDto(payment));
+                    payments.Add(MappingHelper.MapToDto(payment));
             }
 
             return new GetPaymentsByUserResponse { Payments = payments };
@@ -196,16 +197,5 @@ namespace FinalProject.Services.Implementations
                 response.ErrorMessage = "Failed to cancel payment";
             return response;
         }
-
-        private static PaymentDto MapToDto(Payment payment) => new PaymentDto
-        {
-            PaymentId = payment.PaymentId,
-            FromBankAccountId = payment.FromBankAccountId,
-            ToBankAccountId = payment.ToBankAccountId,
-            Amount = payment.Amount,
-            Reason = payment.Reason,
-            Timestamp = payment.Timestamp,
-            Status = payment.Status
-        };
     }
 }

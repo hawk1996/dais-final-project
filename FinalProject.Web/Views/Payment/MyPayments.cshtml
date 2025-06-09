@@ -1,0 +1,57 @@
+﻿@using FinalProject.Web.Models.Enums
+@model List<FinalProject.Web.Models.Payment.PaymentViewModel>
+
+@{
+    var currentSort = ViewBag.CurrentSort as PaymentSortOption? ?? PaymentSortOption.ByDateDesc;
+}
+
+<h2>Моите плащания</h2>
+
+<form method="get" asp-action="MyPayments" asp-controller="Payment">
+    <label for="sortSelect">Сортирай по:</label>
+    <select id="sortSelect" name="sort" onchange="this.form.submit()">
+        <option value="ByDateDesc" selected="@(currentSort == PaymentSortOption.ByDateDesc ? "selected" : null)">Хронологично</option>
+        <option value="ByStatus" selected="@(currentSort == PaymentSortOption.ByStatus ? "selected" : null)">По статус (първо ИЗЧАКВА)</option>
+    </select>
+</form>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Вашата сметка</th>
+            <th>Сметка на получателя</th>
+            <th>Сума</th>
+            <th>Причина</th>
+            <th>Дата</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var payment in Model)
+        {
+            <tr>
+                <td>@payment.FromAccount</td>
+                <td>@payment.ToAccount</td>
+                <td>@payment.Amount.ToString("C")</td>
+                <td>@payment.Reason</td>
+                <td>@payment.Timestamp.ToString("g")</td>
+                <td>@payment.Status</td>
+                <td>
+                    @if (payment.Status == "ИЗЧАКВА")
+                    {
+                        <form method="post" asp-action="ConfirmPayment" asp-controller="Payment" style="display:inline;">
+                            <input type="hidden" name="paymentId" value="@payment.PaymentId" />
+                            <button type="submit" class="btn btn-success btn-sm">Потвърди</button>
+                        </form>
+
+                        <form method="post" asp-action="CancelPayment" asp-controller="Payment" style="display:inline; margin-left:5px;">
+                            <input type="hidden" name="paymentId" value="@payment.PaymentId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Откажи</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,36 @@
+﻿@model FinalProject.Web.Models.Home.HomeViewModel
+
+@{
+    ViewData["Title"] = "Моите банкови сметки";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a asp-controller="Payment" asp-action="Create" class="btn btn-primary mb-3">
+    Създайте ново плащане
+</a>
+
+@if (Model.BankAccounts == null || !Model.BankAccounts.Any())
+{
+    <p>Все още нямате банкови сметки.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Номер на сметка</th>
+                <th>Баланс</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model.BankAccounts)
+            {
+                <tr>
+                    <td>@account.AccountNumber</td>
+                    <td>@account.Balance.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
