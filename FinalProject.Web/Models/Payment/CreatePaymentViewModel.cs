@@ -16,6 +16,7 @@ namespace FinalProject.Web.Models.Payment
         [Required]
         [Display(Name = "Сметка на получателя")]
         [StringLength(22, MinimumLength = 22, ErrorMessage = "Номера на сметката трябва да е точно 22 символа.")]
+        [RegularExpression("^[A-Za-z0-9]+$", ErrorMessage = "Номера на сметката трябва да съдържа само латински букви и цифри.")]
         public string ToBankAccountNumber { get; set; }
 
         [Required]

@@ -4,7 +4,6 @@ using FinalProject.Web.Models.Payment;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using FinalProject.Web.Models.Enums;
-using FinalProject.Model.Enums;
 
 namespace FinalProject.Web.Controllers
 {
@@ -40,7 +39,10 @@ namespace FinalProject.Web.Controllers
             var toBankAccount = await _bankAccountService.GetByNumberAsync(model.ToBankAccountNumber);
 
             if (toBankAccount.BankAccount == null)
+            {
+                TempData["ErrorMessage"] = toBankAccount.ErrorMessage;
                 return await RenderCreatePaymentView(model);
+            }
 
             var request = new CreatePaymentRequest
             {

@@ -1,6 +1,5 @@
 ﻿using FinalProject.Model;
 using FinalProject.Model.Enums;
-using FinalProject.Repository.Implementations;
 using FinalProject.Repository;
 using FinalProject.Repository.Interfaces.BankAccount;
 using FinalProject.Repository.Interfaces.Payment;
